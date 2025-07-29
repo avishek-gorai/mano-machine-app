@@ -17,78 +17,49 @@
 package mano_machine.mano_machine_app;
 
 import java.awt.BorderLayout;
-import java.awt.Container;
-import java.awt.GridLayout;
 
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
 /**
+ * I represent the Mano Machine application.
  * 
  * @author Avishek Gorai
  */
 public class App 
 extends JFrame {
     private static final long serialVersionUID = -5996279147708093557L;
-    private Terminal terminalPanel;
-    private Processor registerPanel;
-    private Memory memoryPanel;
-    private Container internals;
+    private static final int appFrameHeight = 300, appFrameWidth = 300;
+    private Processor computer;
     
     App() {
         super("Mano Machine");
-        setTerminalPanel(new Terminal());
-        setMemoryPanel(new Memory());
-        setRegisterPanel(new Processor(getMemoryPanel()));
-        getRegisterPanel().setAccumulator(34);
-        setInternals(new Container());
-        setSize(300, 300);
+        setComputer(new Processor());
+        setJMenuBar(new AppMenuBar());
+        add(getComputer(), BorderLayout.CENTER);
+        setSize(App.getAppframewidth(), App.getAppframeheight());
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setVisible(true);
     }
-
+    
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> new App());
     }
     
-    Container getInternals() {
-        return internals;
+    static int getAppframeheight() {
+        return appFrameHeight;
     }
 
-    App setInternals(Container internals) {
-        internals.setLayout(new GridLayout(0, 1));
-        internals.add(getRegisterPanel());
-        internals.add(getMemoryPanel());
-        add(internals, BorderLayout.EAST);
-        this.internals = internals;
-        return this;
+    static int getAppframewidth() {
+        return appFrameWidth;
     }
 
-    Terminal getTerminalPanel() {
-        return terminalPanel;
+    Processor getComputer() {
+        return computer;
     }
 
-    App setTerminalPanel(Terminal terminalPanel) {
-        add(terminalPanel, BorderLayout.CENTER);
-        this.terminalPanel = terminalPanel;
-        return this;
-    }
-
-    Processor getRegisterPanel() {
-        return registerPanel;
-    }
-
-    App setRegisterPanel(Processor registerPanel) {
-        this.registerPanel = registerPanel;
-        return this;
-    }
-
-    Memory getMemoryPanel() {
-        return memoryPanel;
-    }
-
-    App setMemoryPanel(Memory memoryPanel) {
-        this.memoryPanel = memoryPanel;
+    App setComputer(Processor computer) {
+        this.computer = computer;
         return this;
     }
 }

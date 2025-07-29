@@ -18,35 +18,37 @@ package mano_machine.mano_machine_app;
 
 import javax.swing.JPanel;
 
+/**
+ * I represnt memory of Mano Machine.
+ * 
+ * @author Avishek Gorai
+ */
 class Memory 
 extends JPanel {
     private static final long serialVersionUID = 7343726309379579355L;
-    private static final int maximumSize = 4096;
-    private int ram[];
+    private int storage[];
     
-    Memory() {
-        setRam(new int [Memory.getMaximumsize()]);
+    Memory(int size) {
+        super();
+        setStorage(new int [size]);
+        setVisible(true);
     }
     
     int read(int address) {
-        return getRam()[address];
+        return getStorage()[address];
     }
     
     Memory write(int address, int value) {
-        getRam()[address] = value;
+        getStorage()[address] = value;
         return this;
     }
 
-    int[] getRam() {
-        return ram;
+    int[] getStorage() {
+        return storage;
     }
 
-    Memory setRam(int[] ram) {
-        this.ram = ram;
+    Memory setStorage(int[] ram) {
+        this.storage = ram;
         return this;
-    }
-
-    static int getMaximumsize() {
-        return maximumSize;
     }
 }

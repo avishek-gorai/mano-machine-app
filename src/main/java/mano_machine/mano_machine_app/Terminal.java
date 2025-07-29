@@ -16,10 +16,14 @@
 
 package mano_machine.mano_machine_app;
 
-import javax.swing.JPanel;
+import javax.swing.JTextArea;
 
+/**
+ * I am a terminal for IO.
+ * 
+ * @author Avishek Gorai
+ */
 class Terminal
-extends JPanel {
+extends JTextArea {
     private static final long serialVersionUID = 7023834721699948905L;
-
 }

@@ -16,60 +16,84 @@
 
 package mano_machine.mano_machine_app;
 
-import java.awt.GridLayout;
+import java.awt.GridBagLayout;
+import java.util.Random;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 
+/**
+ * I am the precessor of Mano Machine.
+ * 
+ * @author Avishek Gorai
+ */
 class Processor
 extends JPanel {
-    private static final long serialVersionUID = 7926125363354810277L;
-    private static final int AND = 0x0,
-                             ADD = 0x1,
-                             LDA = 0x2,
-                             STA = 0x3,
-                             BUN = 0x4,
-                             BSA = 0x5,
-                             ISZ = 0x6,
-                             REG = 0x7,
-                             CLA = 0x800,
-                             CLE = 0x400,
-                             CMA = 0x200,
-                             CIR = 0x80,
-                             CIL = 0x20,
-                             INC = 0x20,
-                             SPA = 0x10,
-                             SNA = 0x8,
-                             SZA = 0x4,
-                             SZE = 0x4,
-                             HLT = 0x1,
-                             IO  = 0xF,
-                             INP = 0x800,
-                             OUT = 0x400,
-                             SKI = 0x200,
-                             SKO = 0x100,
-                             ION = 0x80,
-                             IOF = 0x40;
-                             
-    private int dataRegister, addressRegister, accumulator, instructionRegister, programCounter, temporaryRegister, inputRegister, outputRegister;
+    private static final long serialVersionUID = 7926125363354810277L;  
+    private static final int maximumMemorySize = 4096;
+    private int sequenceCounter, dataRegister, addressRegister, accumulator, instructionRegister, programCounter, temporaryRegister, inputRegister, outputRegister;
     private boolean indirectAddressBit, stopFlag, extendedAccumulatorBit, interruptCycleFlag, interruptEnabledFlag, inputFlag, outputFlag;
     private Memory memory;
     private JLabel accumulatorLabel;
+    private Terminal terminal;
 
-    Processor(Memory m) {
-        super();
-        setMemory(m);
-        setLayout(new GridLayout(0, 2));
-        add(new JLabel("AC"));
+    Processor() {
+        setMemory(new Memory(Processor.getMaximummemorysize()));
+        setTerminal(new Terminal());
         setAccumulatorLabel(new JLabel());
+        setLayout(new GridBagLayout());
+        setRandomValues();
+        add(new JScrollPane(getTerminal()), new ComputerLayoutConstraint().setGridX(0).setGridY(0).setGridHeight(2));
+        add(getMemory(), new ComputerLayoutConstraint().setGridX(1).setGridY(1).setGridWidth(2));
+        add(new JLabel("AC"), new ComputerLayoutConstraint().setGridX(1).setGridY(0));
+        add(getAccumulatorLabel(), new ComputerLayoutConstraint().setGridX(2).setGridY(0));
         setVisible(true);
     }
     
+    Processor setRandomValues() {
+        setAccumulator(new Random().nextInt(0xFFFF));
+        return this;
+    }
+
+    int getSequenceCounter() {
+        return sequenceCounter;
+    }
+
+    Processor setSequenceCounter(int sequenceCounter) {
+        this.sequenceCounter = sequenceCounter;
+        return this;
+    }
+
+    Terminal getTerminal() {
+        return terminal;
+    }
+
+    Processor setTerminal(Terminal terminal) {
+        this.terminal = terminal;
+        return this;
+    }
+
+    static int getMaximummemorysize() {
+        return maximumMemorySize;
+    }
+
     Processor run() {
+        final int AND = 0x0,
+                  ADD = 0x1,
+                  LDA = 0x2,
+                  STA = 0x3,
+                  BUN = 0x4,
+                  BSA = 0x5,
+                ISZ = 0x6,
+                REG_IO = 0x7;
+
         while (!isStop()) {
             setAddressRegister(getProgramCounter());
-            incrementProgramCounter();
             setInstructionRegister(getMemory().read(getAddressRegister()));
+            incrementProgramCounter();
+            setAddressRegister(getInstructionRegister() % 0x1000);
+            clearIndirectAddressBit();
             if (getInstructionRegister() > 0x7fff) {
                 setIndirectAddressBit();
                 setAddressRegister(getMemory().read(getAddressRegister()));
@@ -79,27 +103,175 @@ extends JPanel {
             
             switch (opcode) {
                 case AND -> {
-                    setDataRegister(getMemory().read(getAddressRegister()));
-                    setAccumulator(getAccumulator() & getDataRegister());    
+                    setDataRegister(readMemory());
+                    setAccumulator(getAccumulator() & getDataRegister());   
+                    setSequenceCounter(0);
                 }
                 
                 case ADD -> {
-                    setDataRegister(getMemory().read(getAddressRegister()));
+                    setDataRegister(readMemory());
                     setAccumulator(getAccumulator() + getDataRegister());
+                    setSequenceCounter(0);
                 }
                 
                 case LDA -> {
-                    setDataRegister(getMemory().read(getAddressRegister()));
+                    setDataRegister(readMemory());
                     setAccumulator(getDataRegister());
+                    setSequenceCounter(0);
                 }
                 
-                case STA -> getMemory().write(getAddressRegister(), getAccumulator());
+                case STA -> {
+                    writeMemory(getAccumulator());
+                    setSequenceCounter(0);
+                }
                 
                 case BUN -> {
-                    
+                    setProgramCounter(getAddressRegister());
+                    setSequenceCounter(0);
                 }
+                
+                case BSA -> {
+                    writeMemory(getProgramCounter());
+                    incrementAddressRegister();
+                    setProgramCounter(getAddressRegister());
+                    setSequenceCounter(0);
+                }
+                
+                case ISZ -> {
+                    setDataRegister(readMemory());
+                    incrementDataRegister();
+                    writeMemory(getDataRegister());
+                    if (getDataRegister() == 0) {
+                        incrementProgramCounter();
+                    }
+                    setSequenceCounter(0);
+                }
+                
+                case REG_IO -> {
+                    if (isIndirectAddress()) {
+                       final int INP = 0x800,
+                                OUT = 0x400,
+                                SKI = 0x200,
+                                SKO = 0x100,
+                                ION = 0x80,
+                                IOF = 0x40;
+                        setSequenceCounter(0);
+                        switch (opcode) {
+                            case INP -> setAccumulator(getInputRegister());
+                            
+                            case OUT -> setOutputRegister(getAccumulator() % 0xFF);
+                            
+                            case SKI -> {
+                                if (isInputReady()) {
+                                    incrementProgramCounter();
+                                }
+                            }
+                            
+                            case SKO -> {
+                                if (isOutputReady()) {
+                                    incrementProgramCounter();
+                                }
+                            }
+                            
+                            case ION -> setInterruptEnabledFlag();
+                            
+                            case IOF -> clearInterruptEnabledFlag();
+                        }
+                    }
+                    else {
+                       final int CLA = 0x800,
+                                CLE = 0x400,
+                                CMA = 0x200,
+                                CME = 0x100,
+                                CIR = 0x80,
+                                CIL = 0x40,
+                                INC = 0x20,
+                                SPA = 0x10,
+                                SNA = 0x8,
+                                SZA = 0x4,
+                                SZE = 0x2,
+                                HLT = 0x1;
+                        setSequenceCounter(0);
+                        switch (opcode) {
+                            case CLA -> setAccumulator(0);
+                            
+                            case CLE -> clearExtendedAccumulatorBit();
+                            
+                            case CMA -> setAccumulator(~getAccumulator());
+                            
+                            case CME -> complementExtendedAccumulatorBit();
+                            
+                            case CIR -> {
+                                
+                            }
+                            
+                            case CIL -> {
+                                
+                            }
+                            
+                            case INC -> setAccumulator(getAccumulator() + 1);
+                            
+                            case SPA -> {
+                                if (getAccumulator() > 0) {
+                                    incrementProgramCounter();
+                                }
+                            }
+                            
+                            case SNA -> {
+                                if (getAccumulator() < 0) {
+                                    incrementProgramCounter();
+                                }
+                            }
+                            
+                            case SZA -> {
+                                if (getAccumulator() == 0) {
+                                    incrementProgramCounter();
+                                }
+                            }
+                            
+                            case SZE -> {
+                                if (getExtendedAccumulatorBit() == false) {
+                                    incrementProgramCounter();
+                                }
+                            }
+                            
+                            case HLT -> setStopFlag();
+                        }
+                    }
+                }
+                
             }
         }
+        
+        return this;
+    }
+
+    Processor complementExtendedAccumulatorBit() {
+        if (getExtendedAccumulatorBit() == true) {
+            clearExtendedAccumulatorBit();
+        }
+        else {
+            setExtendedAccumulatorBit();
+        }
+        return this;
+    }
+
+    Processor writeMemory(int value) {
+        getMemory().write(getAddressRegister(), value);
+        return this;
+    }
+    
+    int readMemory() {
+        return getMemory().read(getAddressRegister());
+    }
+
+    Processor incrementDataRegister() {
+        setDataRegister(getDataRegister() + 1);
+        return this;
+    }
+
+    Processor incrementAddressRegister() {
+        setAddressRegister(getAddressRegister() + 1);
         return this;
     }
 
@@ -109,7 +281,6 @@ extends JPanel {
 
     Processor setAccumulatorLabel(JLabel accumulatorLabel) {
         this.accumulatorLabel = accumulatorLabel;
-        add(accumulatorLabel);
         return this;
     }
 
