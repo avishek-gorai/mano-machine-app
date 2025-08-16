@@ -51,30 +51,30 @@ extends JPanel {
         setVisible(true);
     }
     
-    Processor setRandomValues() {
+    private Processor setRandomValues() {
         setAccumulator(new Random().nextInt(0xFFFF));
         return this;
     }
 
-    int getSequenceCounter() {
+    private int getSequenceCounter() {
         return sequenceCounter;
     }
 
-    Processor setSequenceCounter(int sequenceCounter) {
+    private Processor setSequenceCounter(int sequenceCounter) {
         this.sequenceCounter = sequenceCounter;
         return this;
     }
 
-    Terminal getTerminal() {
+    private Terminal getTerminal() {
         return terminal;
     }
 
-    Processor setTerminal(Terminal terminal) {
+    private Processor setTerminal(Terminal terminal) {
         this.terminal = terminal;
         return this;
     }
 
-    static int getMaximummemorysize() {
+    private static int getMaximummemorysize() {
         return maximumMemorySize;
     }
 
@@ -85,8 +85,8 @@ extends JPanel {
                   STA = 0x3,
                   BUN = 0x4,
                   BSA = 0x5,
-                ISZ = 0x6,
-                REG_IO = 0x7;
+                  ISZ = 0x6,
+                  REG_IO = 0x7;
 
         while (!isStop()) {
             setAddressRegister(getProgramCounter());
@@ -246,7 +246,7 @@ extends JPanel {
         return this;
     }
 
-    Processor complementExtendedAccumulatorBit() {
+    private Processor complementExtendedAccumulatorBit() {
         if (getExtendedAccumulatorBit() == true) {
             clearExtendedAccumulatorBit();
         }
@@ -256,216 +256,237 @@ extends JPanel {
         return this;
     }
 
-    Processor writeMemory(int value) {
+    private Processor writeMemory(int value) {
         getMemory().write(getAddressRegister(), value);
         return this;
     }
     
-    int readMemory() {
+    private int readMemory() {
         return getMemory().read(getAddressRegister());
     }
 
-    Processor incrementDataRegister() {
+    private Processor incrementDataRegister() {
         setDataRegister(getDataRegister() + 1);
         return this;
     }
 
-    Processor incrementAddressRegister() {
+    private Processor incrementAddressRegister() {
         setAddressRegister(getAddressRegister() + 1);
         return this;
     }
 
-    JLabel getAccumulatorLabel() {
+    private JLabel getAccumulatorLabel() {
         return accumulatorLabel;
     }
 
-    Processor setAccumulatorLabel(JLabel accumulatorLabel) {
+    private Processor setAccumulatorLabel(JLabel accumulatorLabel) {
         this.accumulatorLabel = accumulatorLabel;
         return this;
     }
 
-    Memory getMemory() {
+    private Memory getMemory() {
         return memory;
     }
 
-    Processor setMemory(Memory memory) {
+    private Processor setMemory(Memory memory) {
         this.memory = memory;
         return this;
     }
 
-    Processor incrementProgramCounter() {
+    private Processor incrementProgramCounter() {
         setProgramCounter(getProgramCounter() + 1);
         return this;
     }
 
-    boolean isIndirectAddress() {
+    private boolean isIndirectAddress() {
         return indirectAddressBit;
     }
 
-    Processor setIndirectAddressBit() {
+    private Processor setIndirectAddressBit() {
         this.indirectAddressBit = true;
+        
         return this;
     }
     
-    Processor clearIndirectAddressBit() {
+    private Processor clearIndirectAddressBit() {
         this.indirectAddressBit = false;
+        
         return this;
     }
 
-    boolean isStop() {
+    private boolean isStop() {
         return stopFlag;
     }
 
-    Processor setStopFlag() {
+    private Processor setStopFlag() {
         this.stopFlag = true;
+        
         return this;
     }
     
-    Processor clearStopFlag() {
+    private Processor clearStopFlag() {
         stopFlag = false;
+        
         return this;
     }
 
-    boolean getExtendedAccumulatorBit() {
+    private boolean getExtendedAccumulatorBit() {
         return extendedAccumulatorBit;
     }
 
-    Processor setExtendedAccumulatorBit() {
+    private Processor setExtendedAccumulatorBit() {
         this.extendedAccumulatorBit = true;
+        
         return this;
     }
     
-    Processor clearExtendedAccumulatorBit() {
+    private Processor clearExtendedAccumulatorBit() {
         extendedAccumulatorBit = false;
+        
         return this;
     }
 
-    boolean isInterruptCycle() {
+    private boolean isInterruptCycle() {
         return interruptCycleFlag;
     }
 
-    Processor setInterruptCycleFlag() {
+    private Processor setInterruptCycleFlag() {
         this.interruptCycleFlag = true;
+        
         return this;
     }
     
-    Processor clearInterruptCycleFlag() {
+    private Processor clearInterruptCycleFlag() {
         interruptCycleFlag = false;
+        
         return this;
     }
 
-    boolean isInterruptEnabled() {
+    private boolean isInterruptEnabled() {
         return interruptEnabledFlag;
     }
 
-    Processor setInterruptEnabledFlag() {
+    private Processor setInterruptEnabledFlag() {
         this.interruptEnabledFlag = true;
+        
         return this;
     }
     
-    Processor clearInterruptEnabledFlag() {
+    private Processor clearInterruptEnabledFlag() {
         this.interruptEnabledFlag = false;
+        
         return this;
     }
 
-    boolean isInputReady() {
+    private boolean isInputReady() {
         return inputFlag;
     }
 
-    Processor setInputFlag() {
+    private Processor setInputFlag() {
         this.inputFlag = true;
+        
         return this;
     }
     
-    Processor clearInputFlag() {
+    private Processor clearInputFlag() {
         this.inputFlag = false;
+        
         return this;
     }
 
-    boolean isOutputReady() {
+    private boolean isOutputReady() {
         return outputFlag;
     }
 
-    Processor setOutputFlag() {
+    private Processor setOutputFlag() {
         this.outputFlag = true;
         return this;
     }
     
-    Processor clearOutputFlag() {
+    private Processor clearOutputFlag() {
         outputFlag = false;
+        
         return this;
     }
 
-    int getDataRegister() {
+    private int getDataRegister() {
         return dataRegister;
     }
 
-    Processor setDataRegister(int dataRegister) {
+    private Processor setDataRegister(int dataRegister) {
         this.dataRegister = dataRegister;
+        
         return this;
     }
 
-    int getAddressRegister() {
+    private int getAddressRegister() {
         return addressRegister;
     }
 
-    Processor setAddressRegister(int addressRegister) {
+    private Processor setAddressRegister(int addressRegister) {
         this.addressRegister = addressRegister;
+        
         return this;
     }
 
-    int getAccumulator() {
+    private int getAccumulator() {
         return accumulator;
     }
 
-    Processor setAccumulator(int accumulator) {
+    private Processor setAccumulator(int accumulator) {
         this.accumulator = accumulator;
         getAccumulatorLabel().setText(Integer.toString(getAccumulator()));
+        
         return this;
     }
 
-    int getInstructionRegister() {
+    private int getInstructionRegister() {
         return instructionRegister;
     }
 
-    Processor setInstructionRegister(int instructionRegister) {
+    private Processor setInstructionRegister(int instructionRegister) {
         this.instructionRegister = instructionRegister;
+        
         return this;
     }
 
-    int getProgramCounter() {
+    private int getProgramCounter() {
         return programCounter;
     }
 
-    Processor setProgramCounter(int programCounter) {
+    private Processor setProgramCounter(int programCounter) {
         this.programCounter = programCounter;
+        
         return this;
     }
 
-    int getTemporaryRegister() {
+    private int getTemporaryRegister() {
         return temporaryRegister;
     }
 
-    Processor setTemporaryRegister(int temporaryRegister) {
+    private Processor setTemporaryRegister(int temporaryRegister) {
         this.temporaryRegister = temporaryRegister;
+        
         return this;
     }
 
-    int getInputRegister() {
+    private int getInputRegister() {
         return inputRegister;
     }
 
-    Processor setInputRegister(int inputRegister) {
+    private Processor setInputRegister(int inputRegister) {
         this.inputRegister = inputRegister;
+        
         return this;
     }
 
-    int getOutputRegister() {
+    private int getOutputRegister() {
         return outputRegister;
     }
 
-    Processor setOutputRegister(int outputRegister) {
+    private Processor setOutputRegister(int outputRegister) {
         this.outputRegister = outputRegister;
+        
         return this;
     }
 }

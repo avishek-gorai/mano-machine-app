@@ -16,39 +16,18 @@
 
 package mano_machine.mano_machine_app;
 
-import javax.swing.JPanel;
+import javax.swing.JMenuItem;
 
 /**
- * I represnt memory of Mano Machine.
+ * This class is for "Save" menu item.
  * 
  * @author Avishek Gorai
  */
-class Memory 
-extends JPanel {
-    private static final long serialVersionUID = 7343726309379579355L;
-    private int storage[];
-    
-    Memory(int size) {
-        setStorage(new int [size]);
-        setVisible(true);
-    }
-    
-    int read(int address) {
-        return getStorage()[address];
-    }
-    
-    Memory write(int address, int value) {
-        getStorage()[address] = value;
-       
-        return this;
-    }
+class SaveMenuItem
+extends JMenuItem {
+    private static final long serialVersionUID = -7571121571363737770L;
 
-    private int[] getStorage() {
-        return storage;
-    }
-
-    private Memory setStorage(int[] ram) {
-        this.storage = ram;
-        return this;
+    public SaveMenuItem() {
+        super("Save");
     }
 }

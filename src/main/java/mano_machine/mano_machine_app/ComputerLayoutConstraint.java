@@ -19,6 +19,7 @@ extends GridBagConstraints {
 
     ComputerLayoutConstraint setWeightY(double d) {
         weighty = d;
+        
         return this;
     }
     
@@ -28,6 +29,7 @@ extends GridBagConstraints {
 
     ComputerLayoutConstraint setWeightX(double d) {
         weightx = d;
+       
         return this;
     }
     
@@ -37,6 +39,7 @@ extends GridBagConstraints {
 
     ComputerLayoutConstraint setGridX(int x) {
         gridx = x;
+       
         return this;
     }
     
@@ -46,15 +49,18 @@ extends GridBagConstraints {
     
     ComputerLayoutConstraint setGridY(int y) {
         gridy = y;
+       
         return this;
     }
     
     int getGridY() {
+        
         return gridy;
     }
 
     ComputerLayoutConstraint setGridWidth(int i) {
         gridwidth = i;
+       
         return this;
     }
     
@@ -64,6 +70,7 @@ extends GridBagConstraints {
 
     ComputerLayoutConstraint setFill(int f) {
         fill = f;
+        
         return this;
     }
     
@@ -73,6 +80,7 @@ extends GridBagConstraints {
 
     ComputerLayoutConstraint setGridHeight(int h) {
         gridheight = h;
+        
         return this;
     }
     

@@ -18,6 +18,7 @@ package mano_machine.mano_machine_app;
 
 import java.awt.event.KeyEvent;
 
+import javax.swing.JDialog;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 
@@ -38,28 +39,32 @@ extends JMenuBar {
         add(getAppHelpMenu());
     }
 
-    JMenu getAppHelpMenu() {
+    private JMenu getAppHelpMenu() {
         return appHelpMenu;
     }
 
-    AppMenuBar setAppHelpMenu(JMenu appHelpMenu) {
+    private AppMenuBar setAppHelpMenu(JMenu appHelpMenu) {
         appHelpMenu.setMnemonic(KeyEvent.VK_H);
-        appHelpMenu.add("About");
-        appHelpMenu.add("User Manual");
+        appHelpMenu.add(new AboutMenuItem());
+        appHelpMenu.add(new UserManualMenuItem());
+       
         this.appHelpMenu = appHelpMenu;
+        
         return this;
     }
 
-    JMenu getFileMenu() {
+    private JMenu getFileMenu() {
         return fileMenu;
     }
 
-    AppMenuBar setFileMenu(JMenu fileMenu) {
+    private AppMenuBar setFileMenu(JMenu fileMenu) {
         fileMenu.setMnemonic(KeyEvent.VK_F);
-        fileMenu.add("Load");
-        fileMenu.add("Save");
+        fileMenu.add(new LoadMenuItem());
+        fileMenu.add(new SaveMenuItem());
         fileMenu.add("Exit").addActionListener((action) -> System.exit(ABORT));
+        
         this.fileMenu = fileMenu;
+        
         return this;
     }
 }

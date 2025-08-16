@@ -26,7 +26,7 @@ import javax.swing.SwingUtilities;
  * 
  * @author Avishek Gorai
  */
-public class App 
+class App 
 extends JFrame {
     private static final long serialVersionUID = -5996279147708093557L;
     private static final int appFrameHeight = 300, appFrameWidth = 300;
@@ -46,20 +46,21 @@ extends JFrame {
         SwingUtilities.invokeLater(() -> new App());
     }
     
-    static int getAppframeheight() {
+    private static int getAppframeheight() {
         return appFrameHeight;
     }
 
-    static int getAppframewidth() {
+    private static int getAppframewidth() {
         return appFrameWidth;
     }
 
-    Processor getComputer() {
+    private Processor getComputer() {
         return computer;
     }
 
-    App setComputer(Processor computer) {
+    private App setComputer(Processor computer) {
         this.computer = computer;
+        
         return this;
     }
 }
